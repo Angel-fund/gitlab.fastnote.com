@@ -1,0 +1,3 @@
+redwood_web_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: RedwoodWebBundle:Default:index }
