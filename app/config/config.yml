@@ -56,6 +56,18 @@ doctrine:
         auto_generate_proxy_classes: %kernel.debug%
         auto_mapping: true
 
+services:
+    session.handler.pdo.connection:
+        class: PDO
+        arguments:
+            dsn:      "mysql:dbname=%database_name%"
+            user:     %database_user%
+            password: %database_password%
+
+    session.handler.pdo:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        arguments: [@session.handler.pdo.connection, %session.handler.pdo.options%]
+
 # Swiftmailer Configuration
 swiftmailer:
     transport: %mailer_transport%
