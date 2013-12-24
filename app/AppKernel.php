@@ -28,6 +28,11 @@ class AppKernel extends Kernel
 
         return $bundles;
     }
+    
+    public function init () {
+        date_default_timezone_set('Asia/Shanghai');
+        parent::init();
+    }
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {

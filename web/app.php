@@ -2,6 +2,8 @@
 
 use Symfony\Component\ClassLoader\ApcClassLoader;
 use Symfony\Component\HttpFoundation\Request;
+use Redwood\Service\Common\ServiceKernel;
+// use Redwood\Service\User\CurrentUser;
 
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 
@@ -21,6 +23,27 @@ $kernel->loadClassCache();
 //$kernel = new AppCache($kernel);
 Request::enableHttpMethodParameterOverride();
 $request = Request::createFromGlobals();
+//移动下面这段到末尾 增加boot（） 方法???
+// $response = $kernel->handle($request);
+// $response->send();
+// $kernel->terminate($request, $response);
+$kernel->boot();
+
+// init Class ServiceKernel
+$serviceKernel = ServiceKernel::create($kernel->getEnvironment(), $kernel->isDebug());
+$serviceKernel->setParameterBag($kernel->getContainer()->getParameterBag());
+$serviceKernel->setConnection($kernel->getContainer()->get('database_connection'));
+
+// $currentUser = new CurrentUser();
+// $currentUser->fromArray(array(
+//     'id' => 0,
+//     'nickname' => '游客',
+//     'currentIp' =>  $request->getClientIp(),
+//     'roles' => array(),
+// ));
+// $serviceKernel->setCurrentUser($currentUser);
+// END: init Class ServiceKernel
+
 $response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);

@@ -4,6 +4,7 @@ namespace Redwood\WebBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Redwood\Service\Common\ServiceKernel;
 
 abstract class BaseController extends Controller
 {
@@ -13,5 +14,15 @@ abstract class BaseController extends Controller
     protected function createJsonResponse($data)
     {
         return new JsonResponse($data);
+    }
+
+    protected function getServiceKernel()
+    {
+        return ServiceKernel::instance();
+    }
+
+    protected function getUserService()
+    {
+        return $this->getServiceKernel()->createService('User.UserService');
     }
 }
