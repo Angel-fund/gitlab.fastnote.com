@@ -6,6 +6,10 @@ interface UserDao
 {
 	public function getUser($id);
 
+	public function findUserByEmail($email);
+
+	public function findUserByUsername($username);
+
     public function addUser($user);
 
 }

@@ -4,7 +4,9 @@ namespace Redwood\Service\User;
 interface UserService
 {
     
-	public function getUser($id);
+	public function getUserByEmail($email);
+
+	public function getUserByUsername($username);
 
     /**
      * 用户注册

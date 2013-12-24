@@ -5,3 +5,10 @@ redwood_web_homepage:
 register:
     pattern:  /register
     defaults: { _controller: RedwoodWebBundle:Register:index }
+
+login:
+    pattern:  /login
+    defaults: { _controller: RedwoodWebBundle:Login:index }
+
+login_check:
+    pattern:  /login_check

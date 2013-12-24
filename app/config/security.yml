@@ -1,17 +1,21 @@
+services:
+    redwood.user_provider:
+        class: Redwood\Service\User\UserProvider
+        arguments:    [@service_container]
+
+
 security:
     encoders:
-        Symfony\Component\Security\Core\User\User: plaintext
-
-    role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        Redwood\Service\User\CurrentUser: sha256
 
     providers:
-        in_memory:
-            memory:
-                users:
-                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
-                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+        custom_provider:
+            id: redwood.user_provider
+
+    role_hierarchy:
+        ROLE_EDITOR:     ROLE_USER
+        ROLE_ADMIN:       ROLE_EDITOR
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     firewalls:
         dev:
@@ -19,21 +23,35 @@ security:
             security: false
 
         login:
-            pattern:  ^/demo/secured/login$
+            pattern:  ^/login$
             security: false
 
-        secured_area:
-            pattern:    ^/demo/secured/
+        main:
+            pattern:    /.*
             form_login:
-                check_path: _security_check
-                login_path: _demo_login
-            logout:
-                path:   _demo_logout
-                target: _demo
-            #anonymous: ~
-            #http_basic:
-            #    realm: "Secured Demo Area"
+                login_path: login
+                check_path: login_check
+                use_referer: true
+            #     failure_handler: redwood.authentication.failure_handler
+            #     success_handler: redwood.authentication.success_handler
+            # remember_me:
+            #     key: "%secret%"
+            #     lifetime: 31536000
+            #     path: /
+            #     domain: ~
+            # logout:
+            #     path:   logout
+            #     target: /
+            #     success_handler: redwood.logout.success_handler
+            anonymous:  true
 
     access_control:
         - { path: ^/demo/secured/hello/admin/, roles: ROLE_ADMIN }
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+
+    access_control:
+        # - { path: ^/my, role: ROLE_USER }
+        - { path: ^/admin/setting, role: ROLE_SUPER_ADMIN }
+        - { path: ^/admin, role: ROLE_ADMIN }
+        - { path: /.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/_internal, roles: IS_AUTHENTICATED_ANONYMOUSLY, ip: 127.0.0.1 }
