@@ -4,7 +4,6 @@ namespace Redwood\WebBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Redwood\WebBundle\Form\RegisterForm;
-use Redwood\Service\Common\ServiceKernel;
 
 class RegisterController extends BaseController
 {
@@ -19,8 +18,6 @@ class RegisterController extends BaseController
 		   if ($form->isValid()) {
 
 				$registration = $form->getData();
-				$currentUser = array('name'=>'heijude');
-				ServiceKernel::instance()->setCurrentUser($currentUser);
 				$user = $this->getUserService()->register($registration);
 				// $this->authenticateUser($user);
 				// // $this->sendVerifyEmail($user);
