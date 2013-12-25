@@ -7,6 +7,16 @@ use Redwood\Service\User\UserService;
 
 class UserServiceImpl extends BaseService implements UserService
 {
+    public function getUser($id)
+    {
+        $user = $this->getUserDao()->getUser($id);
+        if(!$user){
+            return null;
+        } else {
+            return UserSerialize::unserialize($user);
+        }
+    }
+    
     public function getUserByEmail($email)
     {
         if (empty($email)) {
@@ -14,30 +24,31 @@ class UserServiceImpl extends BaseService implements UserService
         }
         $user = $this->getUserDao()->findUserByEmail($email);
         return $user;
-        // if(!$user){
-        //     return null;
-        // } else {
-        //     return UserSerialize::unserialize($user);
-        // }
+        if(!$user){
+            return null;
+        } else {
+            return UserSerialize::unserialize($user);
+        }
     }
 
     public function getUserByUsername($username){
         $user = $this->getUserDao()->findUserByUsername($username);
         return $user;
-        // if(!$user){
-        //     return null;
-        // } else {
-        //     return UserSerialize::unserialize($user);
-        // }
+        if(!$user){
+            return null;
+        } else {
+            return UserSerialize::unserialize($user);
+        }
     }
 
     public function register($registration, $type = 'default')
     {
-        if (!$this->validateEmail($registration['email'])) {
-            throw $this->createServiceException('email error!');
-        }
         if (!$this->validateUsername($registration['username'])) {
             throw $this->createServiceException('username error!');
+        }
+
+        if (!$this->validateEmail($registration['email'])) {
+            throw $this->createServiceException('email error!');
         }
 
         if (!$this->isEmailAvailable($registration['email'])) {
@@ -47,16 +58,19 @@ class UserServiceImpl extends BaseService implements UserService
         if (!$this->isUsernameAvailable($registration['username'])) {
             throw $this->createServiceException('用户名已存在');
         }
+
         $user = array();
         $user['email'] = $registration['email'];
         $user['username'] = $registration['username'];
-        $user['roles'] =  'ROLE_USER';
+        $user['roles'] =  array('ROLE_USER');
         $user['createdTime'] = time();
         //salt 加密
         $user['salt'] = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $user['password'] = $this->getPasswordEncoder()->encodePassword($registration['password'], $user['salt']);
-        var_dump($user);
-        $user = $this->getUserDao()->addUser($user);
+        $user = UserSerialize::unserialize(
+            $this->getUserDao()->addUser(UserSerialize::serialize($user))
+        );
+
         return $user;
     }
 
@@ -112,6 +126,32 @@ class UserServiceImpl extends BaseService implements UserService
     private function getUserDao()
     {
         return $this->createDao('User.UserDao');
+    }
+
+}
+
+class UserSerialize
+{
+    public static function serialize(array $user)
+    {
+        $user['roles'] = empty($user['roles']) ? '' :  '|' . implode('|', $user['roles']) . '|';
+        return $user;
+    }
+
+    public static function unserialize(array $user = null)
+    {
+        if (empty($user)) {
+            return null;
+        }
+        $user['roles'] = empty($user['roles']) ? array() : explode('|', trim($user['roles'], '|')) ;
+        return $user;
+    }
+
+    public static function unserializes(array $users)
+    {
+        return array_map(function($user) {
+            return UserSerialize::unserialize($user);
+        }, $users);
     }
 
 }

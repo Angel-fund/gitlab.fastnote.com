@@ -48,10 +48,7 @@ class CurrentUser implements AdvancedUserInterface, EquatableInterface, \ArrayAc
     }
 
     public function getRoles() {
-        if (empty($this->roles)) {
-            return array();
-        }
-        return explode(',', $this->roles);
+        return $this->roles;
     }
 
     public function getPassword() {

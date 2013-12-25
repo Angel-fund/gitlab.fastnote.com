@@ -3,12 +3,47 @@
 namespace Redwood\WebBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Redwood\Service\Common\ServiceKernel;
+use Redwood\Service\User\CurrentUser;
 
 abstract class BaseController extends Controller
 {
-	
+	/**
+     * 获得当前用户
+     * 
+     * 如果当前用户为游客，那么返回id为0, nickanme为"游客", currentIp为当前IP的CurrentUser对象。
+     * 不能通过empty($this->getCurrentUser())的方式来判断用户是否登录。
+     */
+    protected function getCurrentUser()
+    {
+        return $this->getUserService()->getCurrentUser();
+    }
+
+    protected function isAdminOnline()
+    {
+        return $this->get('security.context')->isGranted('ROLE_ADMIN');
+    }
+
+    public function getUser()
+    {
+        throw new \RuntimeException('获得当前登录用户的API变更为：getCurrentUser()。');
+    }
+    
+	protected function authenticateUser ($user)
+    {
+        $currentUser = new CurrentUser();
+        $currentUser->fromArray($user);
+
+        $token = new UsernamePasswordToken($currentUser, null, 'main', $currentUser['roles']);
+        $this->container->get('security.context')->setToken($token);
+
+        $loginEvent = new InteractiveLoginEvent($this->getRequest(), $token);
+        $this->get('event_dispatcher')->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+    }
 
     //页面中用到的 ajax 刷新页面，都是用这个方法的
     protected function createJsonResponse($data)

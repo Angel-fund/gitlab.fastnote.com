@@ -9,6 +9,9 @@ class LoginController extends BaseController
 
     public function indexAction(Request $request)
     {
+        // $data = $request->request->all();
+        // var_dump($request);
+        // return false;
         if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
             $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
         } else {
