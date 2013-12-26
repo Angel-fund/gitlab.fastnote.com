@@ -26,6 +26,8 @@ interface UserService
 
     public function changePassword($id, $password);
 
+    public function markLoginInfo();
+
 
 
 

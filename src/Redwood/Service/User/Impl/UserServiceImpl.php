@@ -33,7 +33,6 @@ class UserServiceImpl extends BaseService implements UserService
 
     public function getUserByUsername($username){
         $user = $this->getUserDao()->findUserByUsername($username);
-        return $user;
         if(!$user){
             return null;
         } else {
@@ -185,6 +184,21 @@ class UserServiceImpl extends BaseService implements UserService
         $this->getUserDao()->updateUser($userId, array('emailVerified' => 1));
     }
 
+    public function markLoginInfo()
+    {
+        $user = $this->getCurrentUser();
+        if (empty($user)) {
+            return ;
+        }
+
+        $this->getUserDao()->updateUser($user['id'], array(
+            'loginIp' => $user['currentIp'],
+            'loginTime' => time(),
+        ));
+
+        $this->getLogService()->info('user', 'login_success', '登录成功');
+    }
+
     private function getUserDao()
     {
         return $this->createDao('User.UserDao');
@@ -216,6 +230,7 @@ class UserSerialize
             return null;
         }
         $user['roles'] = empty($user['roles']) ? array() : explode('|', trim($user['roles'], '|')) ;
+     
         return $user;
     }
 

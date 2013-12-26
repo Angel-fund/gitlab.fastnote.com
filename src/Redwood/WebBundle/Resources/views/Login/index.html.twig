@@ -1,8 +1,8 @@
 {# src/Redwood/WebBundle/Resources/views/Login/index.html.twig #}
 {% extends 'RedwoodWebBundle::beforeLayout.html.twig' %}
-{% block introduce %}  
+{% block title %}  
 	{# <h1>登 录</h1> #}
-
+登 录
 {% endblock %}
 {% block content %}
 
@@ -34,6 +34,8 @@
               </label>
             </span>
             <a href="{{ path('password_reset') }}">找回密码</a>
+
+            <input type="hidden" name="_target_path" value="{{ path('homepage') }}" />
            {#  {% if app.request.query.get('to') %}
               <input type="hidden" name="_target_path" value="{{ app.request.query.get('to') }}" />
             {% endif %} #}
