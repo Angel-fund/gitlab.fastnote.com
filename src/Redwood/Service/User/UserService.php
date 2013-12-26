@@ -16,4 +16,15 @@ interface UserService
      */
     public function register($registration, $type = 'default');
 
+    public function makeToken($type, $userId = null, $expiredTime = null, $data = null);
+
+    public function getTokenByToken($type, $token);
+
+    public function setEmailVerified($userId);
+
+    public function deleteToken($type, $token);
+
+
+
+
 }

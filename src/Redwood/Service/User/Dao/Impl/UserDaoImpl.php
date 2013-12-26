@@ -5,7 +5,6 @@ namespace Redwood\Service\User\Dao\Impl;
 use Redwood\Service\Common\BaseDao;
 use Redwood\Service\User\Dao\UserDao;
 use Redwood\Common\DaoException;
-use PDO;
 
 class UserDaoImpl extends BaseDao implements UserDao
 {
@@ -36,6 +35,12 @@ class UserDaoImpl extends BaseDao implements UserDao
             throw $this->createDaoException('Insert user error.');
         }
         return $this->getUser($this->getConnection()->lastInsertId());
+    }
+
+    public function updateUser($id, $fields)
+    {
+        $this->getConnection()->update($this->table, $fields, array('id' => $id));
+        return $this->getUser($id);
     }
 
 }

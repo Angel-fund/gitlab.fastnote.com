@@ -16,7 +16,7 @@ class UserServiceImpl extends BaseService implements UserService
             return UserSerialize::unserialize($user);
         }
     }
-    
+
     public function getUserByEmail($email)
     {
         if (empty($email)) {
@@ -123,9 +123,55 @@ class UserServiceImpl extends BaseService implements UserService
           return empty($user) ? true : false;
     }
 
+    public function makeToken($type, $userId = null, $expiredTime = null, $data = null)
+    {
+        $token = array();
+        $token['type'] = $type;
+        $token['userId'] = $userId ? (int)$userId : 0;
+        $token['token'] = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $token['data'] = serialize($data);
+        $token['expiredTime'] = $expiredTime ? (int) $expiredTime : 0;
+        $token['createdTime'] = time();
+        $token = $this->getUserTokenDao()->addToken($token);
+        return $token['token'];
+    }
+
+    public function getTokenByToken($type, $token)
+    {
+        $token = $this->getUserTokenDao()->findTokenByToken($token);
+        if (empty($token) || $token['type'] != $type) {
+            return null;
+        }
+        if ($token['expiredTime'] > 0 && $token['expiredTime'] < time()) {
+            return null;
+        }
+        $token['data'] = unserialize($token['data']);
+        return $token;
+    }
+
+    public function deleteToken($type, $token)
+    {
+        $token = $this->getUserTokenDao()->findTokenByToken($token);
+        if (empty($token) || $token['type'] != $type) {
+            return false;
+        }
+        $this->getUserTokenDao()->deleteToken($token['id']);
+        return true;
+    }
+
+    public function setEmailVerified($userId)
+    {
+        $this->getUserDao()->updateUser($userId, array('emailVerified' => 1));
+    }
+
     private function getUserDao()
     {
         return $this->createDao('User.UserDao');
+    }
+
+    private function getUserTokenDao()
+    {
+        return $this->createDao('User.TokenDao');
     }
 
 }

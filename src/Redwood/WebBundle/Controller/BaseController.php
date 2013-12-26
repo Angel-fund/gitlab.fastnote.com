@@ -32,7 +32,7 @@ abstract class BaseController extends Controller
     {
         throw new \RuntimeException('获得当前登录用户的API变更为：getCurrentUser()。');
     }
-    
+
 	protected function authenticateUser ($user)
     {
         $currentUser = new CurrentUser();
@@ -43,6 +43,26 @@ abstract class BaseController extends Controller
 
         $loginEvent = new InteractiveLoginEvent($this->getRequest(), $token);
         $this->get('event_dispatcher')->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+    }
+    
+    protected function sendEmail ($receiver, $title, $body, $format = 'text/plain') {
+        $siteName = $this->container->getParameter('site_name');
+        $emailFrom = $this->container->getParameter('mailer_account');
+
+        try {
+            $mailer = $this->get('mailer');
+            $email = \Swift_Message::newInstance();
+            $email->setSubject($title);
+            $email->setFrom(array($emailFrom => $siteName));
+            $email->setTo($receiver);
+            $email->setBody($body, $format);
+            
+            $mailer->send($email);
+        } catch (\Exception $e) {
+            // @todo log it.
+        }
+
+        return true;
     }
 
     //页面中用到的 ajax 刷新页面，都是用这个方法的

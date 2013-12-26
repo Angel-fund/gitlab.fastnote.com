@@ -13,6 +13,7 @@ class RegisterController extends BaseController
         if (empty($user)) {
             throw $this->createNotFoundException();
         }
+
         // var_dump($this->getCurrentUser());
         return $this->render('RedwoodWebBundle:Register:success.html.twig', array(
             'user' => $user,
@@ -34,7 +35,7 @@ class RegisterController extends BaseController
 				$registration = $form->getData();
 				$user = $this->getUserService()->register($registration);
 				$this->authenticateUser($user);
-				// // $this->sendVerifyEmail($user);
+				$this->sendVerifyEmail($user);
 				return $this->redirect($this->generateUrl('register_success', array(
                     'id' => $user['id'], 
                     'hash' => $this->makeHash($user),
@@ -46,6 +47,46 @@ class RegisterController extends BaseController
 			'form' => $form->createView(),
 		));
 	}
+
+	private function sendVerifyEmail($user) {
+        $token = $this->getUserService()->makeToken('email-verify', $user['id'], strtotime('+1 day'));
+        $siteName = $this->container->getParameter('site_name');
+        $emailTitle = "验证{$user['username']}在{$siteName}的电子邮箱";
+        $emailBody = $this->renderView('RedwoodWebBundle:Register:verify-email.html.twig', array(
+            'user' => $user,
+            'token' => $token,
+        ));
+
+        $this->sendEmail($user['email'], $emailTitle, $emailBody, 'text/html');
+    }
+
+    public function emailVerifyAction(Request $request, $token)
+    {
+
+        $token = $this->getUserService()->getTokenByToken('email-verify', $token);
+        if (empty($token)) {
+            $currentUser = $this->getCurrentUser();
+            if (empty($currentUser)) {
+                return $this->render('RedwoodWebBundle:Register:email-verify-error.html.twig');
+            } else {
+            	// @todo
+                // return $this->redirect($this->generateUrl('settings'));
+                return $this->render('RedwoodWebBundle:Register:email-verify-error.html.twig');
+                
+            }
+        }
+
+        $user = $this->getUserService()->getUser($token['userId']);
+        if (empty($user)) {
+            return $this->createNotFoundException();
+        }
+
+        $this->getUserService()->setEmailVerified($user['id']);
+
+        $this->getUserService()->deleteToken('email-verify', $token['token']);
+
+        return $this->render('RedwoodWebBundle:Register:email-verify-success.html.twig');
+    }
 
 	private function makeHash($user)
     {

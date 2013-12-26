@@ -12,4 +12,8 @@ interface UserDao
 
     public function addUser($user);
 
+    public function updateUser($id, $fields);
+
+    
+
 }
