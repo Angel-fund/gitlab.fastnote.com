@@ -4,7 +4,6 @@ namespace Redwood\Service\Common;
 use Redwood\Service\Common\ServiceException;
 use Redwood\Service\Common\NotFoundException;
 use Redwood\Service\Common\AccessDeniedException;
-// use Redwood\Service\User\CurrentUser;
 
 abstract class BaseService
 {

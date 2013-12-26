@@ -20,3 +20,11 @@ register_success:
 register_email_verify:
     pattern:  /register/email/verify/{token}
     defaults: { _controller: RedwoodWebBundle:Register:emailVerify }
+
+password_reset:
+    pattern:  /password/reset
+    defaults: { _controller: RedwoodWebBundle:PasswordReset:index }
+
+password_reset_update:
+    pattern:  /password/reset/update
+    defaults: { _controller: RedwoodWebBundle:PasswordReset:update }

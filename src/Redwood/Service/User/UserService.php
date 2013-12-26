@@ -24,6 +24,9 @@ interface UserService
 
     public function deleteToken($type, $token);
 
+    public function changePassword($id, $password);
+
+
 
 
 

@@ -21,7 +21,8 @@ class UserProvider implements UserProviderInterface {
         if (empty($user)) {
             throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
         }
-        // $user['currentIp'] = $this->container->get('request')->getClientIp();
+        //currentIp 不用存入user表，用户每次登录都需要记录
+        $user['currentIp'] = $this->container->get('request')->getClientIp();
         $currentUser = new CurrentUser();
         $currentUser->fromArray($user);
 

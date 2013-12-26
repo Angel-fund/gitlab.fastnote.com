@@ -159,6 +159,27 @@ class UserServiceImpl extends BaseService implements UserService
         return true;
     }
 
+    public function changePassword($id, $password)
+    {
+        $user = $this->getUser($id);
+        if (empty($user) or empty($password)) {
+            throw $this->createServiceException('参数不正确，更改密码失败。');
+        }
+
+        $salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+
+        $fields = array(
+            'salt' => $salt,
+            'password' => $this->getPasswordEncoder()->encodePassword($password, $salt),
+        );
+
+        $this->getUserDao()->updateUser($id, $fields);
+
+        $this->getLogService()->info('user', 'password-changed', "用户{$user['email']}(ID:{$user['id']})重置密码成功");
+
+        return true;
+    }
+
     public function setEmailVerified($userId)
     {
         $this->getUserDao()->updateUser($userId, array('emailVerified' => 1));
@@ -172,6 +193,11 @@ class UserServiceImpl extends BaseService implements UserService
     private function getUserTokenDao()
     {
         return $this->createDao('User.TokenDao');
+    }
+
+    protected function getLogService()
+    {
+        return $this->createService('System.LogService');        
     }
 
 }

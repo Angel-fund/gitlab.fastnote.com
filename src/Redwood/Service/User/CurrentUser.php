@@ -92,10 +92,10 @@ class CurrentUser implements AdvancedUserInterface, EquatableInterface, \ArrayAc
         return true;
     }
 
-    // public function isLogin()
-    // {
-    //     return empty($this->id) ? false : true;
-    // }
+    public function isLogin()
+    {
+        return empty($this->id) ? false : true;
+    }
 
     public function isAdmin()
     {

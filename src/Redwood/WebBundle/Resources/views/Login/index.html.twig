@@ -33,6 +33,7 @@
                 <input type="checkbox" name="_remember_me"> 记住密码 
               </label>
             </span>
+            <a href="{{ path('password_reset') }}">找回密码</a>
            {#  {% if app.request.query.get('to') %}
               <input type="hidden" name="_target_path" value="{{ app.request.query.get('to') }}" />
             {% endif %} #}
