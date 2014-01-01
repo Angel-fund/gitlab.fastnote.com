@@ -199,6 +199,17 @@ class UserServiceImpl extends BaseService implements UserService
         $this->getLogService()->info('user', 'login_success', '登录成功');
     }
 
+    public function searchUsers(array $conditions, array $oderBy, $start, $limit)
+    {
+        $users = $this->getUserDao()->searchUsers($conditions, $oderBy, $start, $limit);
+        return UserSerialize::unserializes($users);
+    }
+
+    public function searchUserCount(array $conditions)
+    {
+        return $this->getUserDao()->searchUserCount($conditions);
+    }
+
     private function getUserDao()
     {
         return $this->createDao('User.UserDao');

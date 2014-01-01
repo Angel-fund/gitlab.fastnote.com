@@ -1,13 +1,13 @@
 <?php
-
 namespace Redwood\AdminBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
-    public function indexAction($name)
+
+    public function indexAction()
     {
-        return $this->render('RedwoodAdminBundle:Default:index.html.twig', array('name' => $name));
+        return $this->render('RedwoodAdminBundle:Default:index.html.twig');
     }
+   
 }
+

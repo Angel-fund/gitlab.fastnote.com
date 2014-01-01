@@ -28,8 +28,8 @@ interface UserService
 
     public function markLoginInfo();
 
+    public function searchUserCount(array $conditions);
 
-
-
+    public function searchUsers(array $conditions, array $oderBy, $start, $limit);
 
 }

@@ -43,4 +43,46 @@ class UserDaoImpl extends BaseDao implements UserDao
         return $this->getUser($id);
     }
 
+    public function searchUserCount(array $conditions)
+    {
+        $builder = $this->createUserQueryBuilder($conditions)
+            ->select('COUNT(id)');
+        return $builder->execute()->fetchColumn(0);
+    }
+
+    public function searchUsers($conditions, $orderBy, $start, $limit)
+    {
+        $builder = $this->createUserQueryBuilder($conditions)
+            ->select('*')
+            ->orderBy($orderBy[0], $orderBy[1])
+            ->setFirstResult($start)
+            ->setMaxResults($limit);
+
+        return $builder->execute()->fetchAll() ? : array();  
+    }
+
+    private function createUserQueryBuilder($conditions)
+    {
+        if (isset($conditions['roles'])) {
+            $conditions['roles'] = "%{$conditions['roles']}%";
+        }
+
+        if(isset($conditions['keywordType'])) {
+            $conditions[$conditions['keywordType']]=$conditions['keyword'];
+            unset($conditions['keywordType']);
+            unset($conditions['keyword']);
+        }
+
+        if (isset($conditions['username'])) {
+            $conditions['username'] = "%{$conditions['username']}%";
+        }
+
+        return $this->createDynamicQueryBuilder($conditions)
+            ->from($this->table, 'user')
+            ->andWhere('roles LIKE :roles')
+            ->andWhere('username LIKE :username')
+            ->andWhere('loginIp = :loginIp')
+            ->andWhere('email = :email');
+    }
+
 }

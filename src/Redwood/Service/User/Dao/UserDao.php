@@ -14,6 +14,8 @@ interface UserDao
 
     public function updateUser($id, $fields);
 
-    
+    public function searchUserCount(array $conditions);
+
+    public function searchUsers($conditions, $orderBy, $start, $limit);
 
 }
