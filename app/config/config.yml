@@ -17,7 +17,8 @@ framework:
         assets_version: 1.0.0
     default_locale:  "%locale%"
     trusted_proxies: ~
-    session:         ~
+    session:
+        handler_id:     session.handler.pdo
     fragments:       ~
 
 # Twig Configuration
@@ -66,6 +67,9 @@ parameters:
 services:
     session.handler.pdo.connection:
         class: PDO
+        calls:
+            - [setAttribute, [3, 2]]
+
         arguments:
             dsn:      "mysql:dbname=%database_name%"
             user:     %database_user%

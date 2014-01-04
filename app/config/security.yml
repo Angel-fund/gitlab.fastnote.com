@@ -7,6 +7,10 @@ services:
         class: Redwood\WebBundle\Handler\AuthenticationSuccessHandler
         parent: security.authentication.success_handler
 
+    redwood.logout.success_handler:
+        class: Redwood\WebBundle\Handler\LogoutSuccessHandler
+        parent: security.logout.success_handler
+
 
 security:
     encoders:
@@ -43,10 +47,10 @@ security:
             #     lifetime: 31536000
             #     path: /
             #     domain: ~
-            # logout:
-            #     path:   logout
-            #     target: /
-            #     success_handler: redwood.logout.success_handler
+            logout:
+                path:   logout
+                target: /
+                success_handler: redwood.logout.success_handler
             anonymous:  true
 
     access_control:

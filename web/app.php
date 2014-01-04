@@ -37,7 +37,7 @@ $serviceKernel->setConnection($kernel->getContainer()->get('database_connection'
 $currentUser = new CurrentUser();
 $currentUser->fromArray(array(
     'id' => 0,
-    'nickname' => '游客',
+    'username' => '游客',
     'currentIp' =>  $request->getClientIp(),
     'roles' => array(),
 ));

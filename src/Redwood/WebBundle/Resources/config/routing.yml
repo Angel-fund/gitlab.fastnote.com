@@ -1,5 +1,5 @@
 homepage:
-    pattern:  /hello
+    pattern:  /
     defaults: { _controller: RedwoodWebBundle:Default:index }
 
 register:
@@ -12,6 +12,9 @@ login:
 
 login_check:
     pattern:  /login_check
+
+logout:
+    pattern:  /logout
 
 register_success:
     pattern:  /register/success/{id}/{hash}
