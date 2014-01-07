@@ -42,11 +42,12 @@ security:
                 use_referer: true
                 # failure_handler: redwood.authentication.failure_handler
                 success_handler: redwood.authentication.success_handler
-            # remember_me:
-            #     key: "%secret%"
-            #     lifetime: 31536000
-            #     path: /
-            #     domain: ~
+            remember_me:
+                key: "%secret%"
+                lifetime: 2592000
+                path: /
+                domain: ~
+                always_remember_me: true
             logout:
                 path:   logout
                 target: /

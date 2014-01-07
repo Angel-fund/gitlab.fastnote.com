@@ -20,14 +20,15 @@ require_once __DIR__.'/../app/AppKernel.php';
 
 $kernel = new AppKernel('prod', false);
 $kernel->loadClassCache();
-//$kernel = new AppCache($kernel);
+$kernel = new AppCache($kernel);
 Request::enableHttpMethodParameterOverride();
 $request = Request::createFromGlobals();
 //移动下面这段到末尾 增加boot（） 方法???
 // $response = $kernel->handle($request);
 // $response->send();
 // $kernel->terminate($request, $response);
-$kernel->boot();
+
+$kernel->boot(); 
 
 // init Class ServiceKernel
 $serviceKernel = ServiceKernel::create($kernel->getEnvironment(), $kernel->isDebug());
