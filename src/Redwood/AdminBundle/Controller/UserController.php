@@ -24,7 +24,7 @@ class UserController extends BaseController
 		$paginator = new Paginator(
 			$this->get('request'),
 			$this->getUserService()->searchUserCount($conditions),
-			4
+			10
 		);
 
 		$users = $this->getUserService()->searchUsers(

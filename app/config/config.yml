@@ -5,7 +5,7 @@ imports:
 
 framework:
     #esi:             ~
-    #translator:      { fallback: %locale% }
+    translator:      { fallback: %locale% }
     secret:          %secret%
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -82,6 +82,12 @@ services:
     session.handler.pdo:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         arguments: [@session.handler.pdo.connection, %session.handler.pdo.options%]
+
+    redwood.twig.web_extension:
+        class: Redwood\WebBundle\Twig\Extension\WebExtension
+        arguments:    [@service_container]
+        tags:
+            - { name: twig.extension }
 
 # Swiftmailer Configuration
 swiftmailer:
