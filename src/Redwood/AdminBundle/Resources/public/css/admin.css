@@ -9,3 +9,11 @@
 	text-align: center;
 	z-index: 2000;
 }
+
+.form-inline > .divider {
+	width: 1px;
+	height: 30px;
+	margin: 10px 9px;
+	border-right: 1px solid #ccc;
+	border-bottom: 0;
+}
