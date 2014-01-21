@@ -199,6 +199,59 @@ class UserServiceImpl extends BaseService implements UserService
         $this->getLogService()->info('user', 'login_success', '登录成功');
     }
 
+    public function changeUserRoles($id, array $roles)
+    {
+
+        $user = $this->getUser($id);
+        if (empty($user)) {
+            throw $this->createServiceException('用户不存在，设置用户角色失败。');
+        }
+
+        if (empty($roles)) {
+            throw $this->createServiceException('用户角色不能为空');
+        }
+
+        if (!in_array('ROLE_USER', $roles)) {
+            throw $this->createServiceException('用户角色必须包含ROLE_USER');
+        }
+
+        // $allowedRoles = array('ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN','ROLE_TEACHER');
+
+        // $notAllowedRoles = array_diff($roles, $allowedRoles);
+        // if (!empty($notAllowedRoles)) {
+        //     throw $this->createServiceException('用户角色不正确，设置用户角色失败。');
+        // }
+        $this->getUserDao()->updateUser($id, UserSerialize::serialize(array('roles' => $roles)));
+
+        $this->getLogService()->info('user', 'change_role', "设置用户{$user['username']}(#{$user['id']})的角色为：" . implode(',', $roles));
+    }
+
+    public function lockUser($id)
+    {
+        $user = $this->getUser($id);
+        if (empty($user)) {
+            throw $this->createServiceException('用户不存在，封禁失败！');
+        }
+        $this->getUserDao()->updateUser($user['id'], array('locked' => 1));
+
+        $this->getLogService()->info('user', 'lock', "封禁用户{$user['username']}(#{$user['id']})");
+
+        return true;
+    }
+
+    public function unlockUser($id)
+    {
+        $user = $this->getUser($id);
+        if (empty($user)) {
+            throw $this->createServiceException('用户不存在，解禁失败！');
+        }
+        $this->getUserDao()->updateUser($user['id'], array('locked' => 0));
+
+        $this->getLogService()->info('user', 'unlock', "解禁用户{$user['username']}(#{$user['id']})");
+
+        return true;
+    }
+
     public function searchUsers(array $conditions, array $oderBy, $start, $limit)
     {
         $users = $this->getUserDao()->searchUsers($conditions, $oderBy, $start, $limit);

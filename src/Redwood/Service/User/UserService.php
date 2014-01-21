@@ -28,6 +28,12 @@ interface UserService
 
     public function markLoginInfo();
 
+    public function changeUserRoles($id, array $roles);
+
+    public function lockUser($id);
+
+    public function unlockUser($id);
+
     public function searchUserCount(array $conditions);
 
     public function searchUsers(array $conditions, array $oderBy, $start, $limit);

@@ -20,6 +20,7 @@ class WebExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
+            'dict' => new \Twig_Function_Method($this, 'getDict') ,
             'dict_text' => new \Twig_Function_Method($this, 'getDictText', array('is_safe' => array('html'))) ,
         );
     }
@@ -62,6 +63,11 @@ class WebExtension extends \Twig_Extension
         return DataDict::text($type, $key);
     }
 
+    public function getDict($type)
+    {
+        return DataDict::dict($type);
+    }
+    
     public function getName ()
     {
         return 'redwood_web_twig';

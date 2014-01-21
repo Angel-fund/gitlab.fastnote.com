@@ -89,6 +89,11 @@ services:
         tags:
             - { name: twig.extension }
 
+    redwood.twig.html_extension:
+        class: Redwood\WebBundle\Twig\Extension\HtmlExtension
+        tags:
+            - { name: twig.extension }
+
 # Swiftmailer Configuration
 swiftmailer:
     transport: %mailer_transport%

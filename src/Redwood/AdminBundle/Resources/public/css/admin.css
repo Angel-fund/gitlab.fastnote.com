@@ -1,1 +1,11 @@
 /*admin css*/
+
+.bootstrap-notify-bar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	border-radius: 0;
+	text-align: center;
+	z-index: 2000;
+}
