@@ -39,4 +39,12 @@ class UserController extends BaseController
 			'paginator' => $paginator,
 		));
 	}
+
+	public function showAction($id)
+	{
+		$user = $this->getUserService()->getUser($id);
+        return $this->render('RedwoodAdminBundle:User:show-modal.html.twig', array(
+            'user' => $user,
+        ));
+	}
 }

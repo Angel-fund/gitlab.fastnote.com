@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
 	window.$ = window.jQuery = require('jquery');
 	require('bootstrap');
-	// require('common/bootstrap-modal-hack');
+	require('common/bootstrap-modal-hack');
 
 	exports.load = function(name) {
 		require.async('./controller/' + name + '.js?' + window.app.version, function(controller){

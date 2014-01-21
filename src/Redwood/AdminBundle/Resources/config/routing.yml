@@ -2,7 +2,10 @@ admin_square:
     pattern:  /square
     defaults: { _controller: RedwoodAdminBundle:Default:index }
 
-
 admin_user:
     pattern: /user
     defaults: { _controller: RedwoodAdminBundle:User:index }
+
+admin_user_show:
+    pattern: /user/{id}
+    defaults: { _controller: RedwoodAdminBundle:User:show }
